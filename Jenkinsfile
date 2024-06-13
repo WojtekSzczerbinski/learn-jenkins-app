@@ -25,6 +25,7 @@ pipeline {
             agent {
                 docker {
                     image 'mcr.microsoft.com/playwright:v1.39.0-jammy '
+                    args '-v /var/run/docker.sock:/var/run/docker.sock -p 3000:3000'
                     reuseNode true
                 }
             }

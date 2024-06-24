@@ -2,10 +2,11 @@ pipeline {
     agent any
 
     environment {
-        NETLIFY_SITE_ID = '271bee3d-9c18-4ed1-9bfc-ed6409a3c2f4'
+        NETLIFY_SITE_ID = '03d4042d-476c-4668-9ce8-34352dad73e4'
     }
 
     stages {
+
         stage('Build') {
             agent {
                 docker {
@@ -24,6 +25,7 @@ pipeline {
                 '''
             }
         }
+
         stage('Tests') {
             parallel {
                 stage('Unit tests') {
@@ -57,8 +59,10 @@ pipeline {
 
                     steps {
                         sh '''
-                            npm install netlify-cli -g
-                            netlify --version
+                            npm install serve
+                            node_modules/.bin/serve -s build &
+                            sleep 10
+                            npx playwright test  --reporter=html
                         '''
                     }
 
@@ -88,3 +92,4 @@ pipeline {
         }
     }
 }
+

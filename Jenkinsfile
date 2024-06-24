@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         NETLIFY_SITE_ID = '03d4042d-476c-4668-9ce8-34352dad73e4'
-        NETLIFY_AUTH_TOKEN = credentials ('netlify-token')
+        NETLIFY_AUTH_TOKEN = credentials('netlify-token')
     }
 
     stages {
@@ -12,7 +12,7 @@ pipeline {
             agent {
                 docker {
                     image 'node:18-alpine'
-                    reuseNode true
+                    args '-u root:root' // Use root user for any file permissions issues
                 }
             }
             steps {
@@ -33,7 +33,7 @@ pipeline {
                     agent {
                         docker {
                             image 'node:18-alpine'
-                            reuseNode true
+                            args '-u root:root'
                         }
                     }
 
@@ -54,7 +54,7 @@ pipeline {
                     agent {
                         docker {
                             image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
-                            reuseNode true
+                            args '-u root:root'
                         }
                     }
 
@@ -63,7 +63,7 @@ pipeline {
                             npm install serve
                             node_modules/.bin/serve -s build &
                             sleep 10
-                            npx playwright test  --reporter=html
+                            npx playwright test --reporter=html
                         '''
                     }
 
@@ -80,7 +80,7 @@ pipeline {
             agent {
                 docker {
                     image 'node:18-alpine'
-                    reuseNode true
+                    args '-u root:root'
                 }
             }
             steps {
@@ -88,10 +88,9 @@ pipeline {
                     npm install netlify-cli
                     node_modules/.bin/netlify --version
                     echo "Deploying to production. Site ID: $NETLIFY_SITE_ID"
-                    node_modules/.bin/netlify status 
+                    node_modules/.bin/netlify status
                 '''
             }
         }
     }
 }
-

@@ -108,7 +108,7 @@ pipeline {
             }
             timeout(15) {
     // some block
-}
+            }
         }
         stage('Deploy prod') {
                     agent {
